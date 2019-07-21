@@ -1,0 +1,235 @@
+Question 10-
+	table queries->
+
+create table Product(
+	product_num int unique,
+	product_name varchar(25),
+	price numeric(10,2),
+	manufacturer_name varchar(25)
+      );
+
+create table Client(
+	client_id int unique,
+	client_name varchar(25),
+	address varchar(25),
+	city varchar(25),
+	pin_code int,
+	state varchar(2),
+	total_balance numeric(10,2)
+      );
+
+create table Sale_order(
+	sale_order_id int unique,
+	sales_order_date date,
+	payment_by_party boolen,
+	delievery_date date,
+	foreign key(salesman_id) references Salesman(sales_id)
+	foreign key(client_id) references Client(client_id)
+       );
+
+create table Salesman(
+	sales_id int unique;
+	name varchar(25),
+	address varchar(25),
+	city varchar(25),
+	pin_code int,
+	state varchar(25),
+	salary float(10,2),
+	quantity_ordered int,
+	product_rate float
+       );
+	
+10a
+	select name, city from Client;
+10b
+	selecte product from Product;
+10c
+	select name from Client where name = "_a%";
+10d
+	select * from Client where city = "Pune";
+10e
+	select product from Porduct where price between 2000 and 5000;
+10f
+	alter table Product add New_price numeric(10,2);
+10g
+	alter table Salesman change product_rate new_product_rate float;
+10h
+	select * from Product order by product asc;
+10i
+	select sales_order_id, deliver_date from Sales_order;
+10j
+	delete from Sales_order where date < '2008-08-25';
+10k
+	update Sales_order
+	set delivery_date = '2016-08-08'
+	where sales_order_id = 'ON01008';
+10l
+	update Client
+	set total_balance = 1200
+	where client_id = 'CN01003';
+10m
+	select * from Product where product = 'HDD1034' and product = 'DVDRW';
+10n
+	select name, city, state from Client where state != 'Maharashtra';
+10o
+	select * from Sales_order where payment_by_party = False and month(sales_order_date) = 3;
+---------------------------------------------------------------------------------------------------
+question 11
+	-> table queries
+
+	create table Student(
+		enroll_id int unique,
+		student_name varchar(25),
+		address varchar(25),
+		enroll_semester varchar(10),
+		CGPA numeric(5,2),
+		forigen key(program_id) reference Academic_prog(program_id),
+		forigen key(department_name) reference Department(department_name)
+	       	);
+
+	create table Academic_prog(
+		program_id int unique,
+		program_name varchar(25) unique,
+		duration int,
+		forigen key (course_name) reference Course(course_name)
+		);
+
+	create table Department(
+		department_id int unique,
+		department_name varchar(25) unique,
+		Head_of_department varchar(25),
+		foreign key(employee_id) reference Teacher(employee_id),
+		foreign key(course_num) refernce Course(course_num)
+		);
+
+	create table Teacher(
+		employee_id int unique,
+		teacher_name varchar(25),
+		designation varchar(25),
+		foreign key(department_name) references Department(department_name)
+		);
+
+	create table Course(
+		course_num int unique,
+		course_name varchar(25),
+		credit_num int,
+		);
+
+	create table Semester(
+		semester_date varchar(25) unique,
+		foreign key(program_name) references Academic_prog(program_name),
+		foreign key(course_num) references course(course_num),
+		foreign key(employee_id) references Teacher(employee_id),
+		foreign key(enroll_id) references Student(enroll_id)
+		);
+
+11a
+	select st.student_name, st.city, st.course 
+	from Student st inner join Department dp 
+	on dp.department_name = st.department_name
+	where dp.department_name = 'CSE department';
+11b
+	select count(employee_id) from Teacher th inner join Department dp
+	on dp.department_name = th.department_name
+	where dp.department_name = 'CSE department';
+11c
+	select cs.course_name from Course cs inner join Department dp
+	on dp.course_num = cs.course_num
+	where dp.department_name = 'CSE department';
+11d
+	select * from Student where enroll_semester = 'Spring';
+11e
+	select student_name from Student where CGPA >= 8.5;
+11f
+	select count(st.progam_name) from Semester st left join Academic_prog ap
+	on ap.program_name = st.program_name;
+11g
+	select st.student_name from student st left join Academic_prog ap
+	on ap.program_id = st.program_id
+	where ap.program_name = 'MCA' and ap.program_name = 'M.Tech';
+
+11h
+	select count(st.stduent_name) from student st left join Academic_prog ap
+	on ap.prgram_id = st.program_id
+	where ap.program_name = 'DBMS';
+
+11i
+	select st.semester_date from semester st inner join Academic_prog ap
+	on ap.program_name = st.program_name
+	where ap.program_name = 'DBMS';
+11j
+	select student_name from Student order by asc;
+11k
+	uppdate Student set address = 'Pune' where enroll_id = 'CSI08002';
+11l
+	select sum(credit_num) from Course cs left join Academic_prog ap
+	on ap.course_name = cs.course_name
+	where ap.program_name = 'MCA';
+11m
+	select cs.course_name from Course cs left join Department dp
+	on dp.course_num = cs.course_num
+	where dp.department_name = 'Computer_Science';
+11n
+	select student_name from Student where address = 'Pune';
+11o
+	select count(department_name) from Department;
+
+------------------------------------------------------------------------
+8.1	select a.name from Aircraft a
+	inner join certified c on c.aid = a.aid
+	inner join employee e on e.eid = c.eid
+	where e.salary > 80000;
+8.2
+	select e.eid, max(a.cruisingrange) from Employee e
+	inner join certified c on c.eid = e.eid
+	inner join Aircraft a on a.aid = c.aid
+	where count(a.aname)>3;
+8.3
+	select ename from Employees where salary <(
+	select min(price) from Flights where from = 'Los Angeles' and to = 'Honolulu');
+8.4
+	select avg(e.salary), a.aname from Employees e
+	inner join Certified c on c.eid = e.eid
+	inner join Aircraft a on a.aid = c.aid
+	where a.cruisingrange > 1000;
+	
+8.5	select e.ename from Employee e
+	inner join certified c on c.eid = e.eid
+	inner join Aircraft a on a.aid = c.aid
+	where a.aname = 'Boeing';
+	
+8.6
+	select aname from aircrafts where cruisingrange>(
+	select distance from flights where from = 'Los Angeles' and to = 'Chicago');
+8.7
+8.8
+	select e.ename from Employees e
+	left join certified c on c.eid = e.eid
+	left join Aircraft a on a.aid = c.aid
+	where a.curisingrage>3000 and a.aname != 'Boeing';
+8.9
+	select flno, departs from Flights
+	where from = 'Madison' and to = 'New York'
+	and arrives<'18:00';
+8.10
+	select avg(e.salary) from Employees
+	left join Certified c on c.eid = e.eid;
+	select avg(salary) from Employees;
+8.11
+	select ename from Employees
+	where eid not in( select e.eid from Employees e left join Certified c on c.eid = e.eid);
+8.12
+	select e.ename from Employees e
+	left join Certified c on c.eid = e.eid
+	left join Aircraft a on a.aid = c.aid
+	where a.cruising range>1000;
+8.13
+	select e.ename from Employees e
+	left join Certified c on c.eid = e.eid
+	left join Aircraft a on a.aid = c.aid
+	where a.cruising range>1000 and count(a.aname)>2;
+8.14
+	select e.ename from Employees e
+	left join Certified c on c.eid = e.eid
+	left join Aircraft a on a.aid = c.aid
+	where a.cruising range>1000 and a.aname='Boeing';
